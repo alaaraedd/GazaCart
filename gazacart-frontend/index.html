@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GAZACART | الصفحة الرئيسية</title>
+  <link id="favicon" rel="icon" type="image/png" href="images/logocart.svg">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="cart-modals.html" as="fetch" crossorigin="anonymous">
+
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header" dir="rtl">
+    <div class="container">
+      <a href="#hero" class="logo-link">
+        <img src="images/logocart.svg" alt="logo" class="logo">
+      </a>
+      <nav class="nav">
+        <a href="#">الرئيسية</a>
+        <a href="#best">أفضل المتاجر</a>
+        <a href="#clothes">متاجر الملابس</a>
+        <a href="#accessories">متاجر الاكسسوارات</a>
+        <a href="#sweets">متاجر الحلويات</a>
+        <a href="#footer">اتصل بنا</a>
+      </nav>
+      <div class="cart">
+        <img src="images/Frame 20.png" alt="سلة" onclick="openCart()">
+        <span>4</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-img">
+        <img src="images/pana.png" alt="تسوق الآن">
+      </div>
+      <div class="hero-text">
+        <h1>تسوق الآن 🛒 | متاجر غزة في مكان واحد 🏬</h1>
+        <p>⚡سهولة وسرعة |</p>
+        <button class="btn yellow" id="openAuthBtn">تسجيل</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Auth Modal -->
+  <div class="modal" id="authModal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="signup">تسجيل</button>
+        <button class="tab-btn" data-tab="signin">تسجيل دخول</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-img">
+          <img src="images/Frame 7617.png" alt="تسجيل">
+        </div>
+
+        <div class="modal-form">
+          <!-- تسجيل -->
+          <div class="tab-content active" id="signup">
+            <h2>تسجيل</h2>
+            <p><strong>دقائق قليلة تفصلك عن التسوق من مختلف المتاجر في غزة ... سجل الآن وابدأ رحلتك الشرائية بسهولة وأمان.</strong></p>
+            <label>الاسم كامل</label>
+            <input type="text" id="signupName" placeholder="ادخل اسمك الكامل">
+
+            <label>رقم الهاتف</label>
+            <div class="phone-input">
+              <img src="images/flag-palestinian.png" alt="PA">
+              <input type="text" id="signupPhone" placeholder="+972 59 111 1111">
+            </div>
+
+            <label>البريد الالكتروني</label>
+            <input type="email" id="signupEmail" placeholder="ادخل البريد الالكتروني">
+
+            <button class="btn yellow small-btn" id="signupBtn">تسجيل</button>
+          </div>
+
+          <!-- تسجيل دخول -->
+          <div class="tab-content" id="signin">
+            <h2>تسجيل دخول</h2>
+            <p><strong>أهلاً بعودتك 👋... تابع تسوقك من متاجر غزة وسجل دخولك للمتابعة.</strong></p>
+            <label>الاسم كامل</label>
+            <input type="text" id="signinName" placeholder="ادخل اسمك الكامل">
+
+            <label>رقم الهاتف</label>
+            <div class="phone-input">
+              <img src="images/flag-palestinian.png" alt="PA">
+              <input type="text" id="signinPhone" placeholder="+972 59 111 1111">
+            </div>
+
+            <button class="btn yellow small-btn" id="signinBtn">تسجيل الدخول</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <section class="search">
+    <div class="container">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="اكتب اسم المنتج أو المتجر ..">
+        <div id="searchResults" class="search-results"></div>
+      </div>
+      <button class="btn yellow" id="searchBtn">ابحث</button>
+    </div>
+  </section>
+
+  <!-- Store Sections -->
+  <section class="store-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>أفضل المتاجر</h2>
+        <a href="#" class="view-all" data-target="best-track">← عرض الكل</a>
+      </div>
+      <div class="store-track" id="best-track"></div>
+    </div>
+  </section>
+
+  <section class="store-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>متاجر الملابس</h2>
+        <a href="#" class="view-all" data-target="clothes-track">← عرض الكل</a>
+      </div>
+      <div class="store-track" id="clothes-track"></div>
+    </div>
+  </section>
+
+  <section class="store-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>متاجر الاكسسوارات</h2>
+        <a href="#" class="view-all" data-target="accessories-track">← عرض الكل</a>
+      </div>
+      <div class="store-track" id="accessories-track"></div>
+    </div>
+  </section>
+
+  <section class="store-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>متاجر الحلويات</h2>
+        <a href="#" class="view-all" data-target="sweets-track">← عرض الكل</a>
+      </div>
+      <div class="store-track" id="sweets-track"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container" id="footer">
+      <div class="footer-col">
+        <img src="images/logocart.svg" alt="footer logo" class="footer-logo">
+        <p>موقع GAZA CART ، لتسهيل طلب خدماتك بسرعة ووقت...</p>
+      </div>
+      <div class="footer-col">
+        <h4>الخدمات</h4>
+        <ul>
+          <li>من نحن</li>
+          <li>الأسئلة الشائعة</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>سياسة الخصوصية</h4>
+        <ul>
+          <li>سياسة الترجيع</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>تابعونا على</h4>
+        <div class="social">
+          <img src="images/Facebook.svg" alt="فيسبوك">
+          <img src="images/Instagram.svg" alt="انستغرام">
+          <img src="images/Twitter.svg" alt="تويتر">
+          <img src="images/TikTok.svg" alt="تيك توك">
+          <img src="images/YouTube.svg" alt="يوتيوب">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Copyright -->
+  <div class="copyright">
+    <p>جميع الحقوق محفوظة ©<span id="year"></span></p>
+  </div>
+
+  <!-- مكان تحميل المودالات -->
+  <div id="modals-container"></div>
+
+  <script>
+    // تحميل المودالات من ملف خارجي
+    fetch("cart-modals.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("modals-container").innerHTML = html;
+
+        // ✅ تفعيل أكواد المودالات بعد تحميلها
+        window.openCart = function () {
+          document.getElementById('cartModal').style.display = 'flex';
+        };
+
+        window.onclick = function (event) {
+          const modal = document.getElementById('cartModal');
+          if (event.target === modal) modal.style.display = "none";
+        };
+
+        document.querySelectorAll(".cart-summary .btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            document.getElementById("cartModal").style.display = "none";
+            document.getElementById("paymentModal").style.display = "flex";
+          });
+        });
+
+        document.querySelector(".btn-cash").addEventListener("click", function () {
+          document.getElementById("paymentModal").style.display = "none";
+          document.getElementById("checkoutModal").style.display = "flex";
+        });
+
+        document.querySelector(".checkout-popup form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          document.getElementById("checkoutModal").style.display = "none";
+          document.getElementById("doneModal").style.display = "flex";
+        });
+
+        document.querySelector(".btn-done").addEventListener("click", function () {
+          document.getElementById("doneModal").style.display = "none";
+        });
+      });
+  </script>
+
+  <script>
+    // فتح مودال التسجيل
+    document.querySelector(".hero .btn.yellow").addEventListener("click", () => {
+      document.getElementById("authModal").style.display = "flex";
+    });
+
+    document.querySelector(".modal .close").addEventListener("click", () => {
+      document.getElementById("authModal").style.display = "none";
+    });
+
+    window.addEventListener("click", e => {
+      const modal = document.getElementById("authModal");
+      if (e.target === modal) modal.style.display = "none";
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+  </script>
+
+  <script>
+    // عرض الكل (تمرير السلايدر)
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.view-all').forEach(button => {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('data-target');
+          const track = document.getElementById(targetId);
+          if (track) {
+            if (track.scrollLeft === 0)
+              track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
+            else
+              track.scrollTo({ left: 0, behavior: 'smooth' });
+          }
+        });
+      });
+    });
+  </script>
+
+  
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+  <script src="js/auth.js"></script>
+  <script src="js/stores.js"></script>
+  <script src="js/cart-script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!-- Cart Modal -->
+<div class="modal" id="cartModal">
+  <div class="modal-content cart-popup">
+    <div class="cart-arrow"></div>
+    <span class="close" onclick="document.getElementById('cartModal').style.display='none'">&times;</span>
+    <div class="cart-body">
+      <div class="cart-items">
+        <!-- المنتجات سيتم توليدها بواسطة JS -->
+      </div>
+      <div class="cart-summary"style="display:none;">
+        <div class="summary-row">
+          <span>التوصيل</span>
+          <span>0 شيكل</span>
+        </div>
+        <div class="summary-row total">
+          <span>الاجمالي</span>
+          <span>0 شيكل</span>
+        </div>
+        <button class="btn yellow">تأكيد</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal" id="paymentModal">
+  <div class="modal-content payment-popup">
+    <div class="cart-arrow"></div>
+    <span class="close" onclick="document.getElementById('paymentModal').style.display='none'">&times;</span>
+    <div class="payment-body">
+      <p class="payment-text">
+        دفع عن طريق حساب بنك فلسطين برقم حساب - <strong>111111</strong>
+      </p>
+      <div class="upload-box">
+        <input type="file" id="receipt" hidden>
+        <label for="receipt"><img src="images/Vector.svg" alt="upload">رفع إشعار الدفع</label>
+      </div>
+      <button type="button" class="btn-next">متابعة</button>
+      <div class="or-separator">
+        <span>أو</span>
+      </div>
+      <button type="button" class="btn-cash">دفع كاش</button>
+    </div>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="modal" id="checkoutModal">
+  <div class="modal-content checkout-popup">
+    <div class="cart-arrow"></div>
+    <span class="close" onclick="document.getElementById('checkoutModal').style.display='none'">&times;</span>
+    <div class="checkout-body">
+      <form>
+        <label>ادخل الاسم كامل</label>
+        <input type="text"name="name" placeholder="الاسم" required />
+        <label>ادخل العنوان لتوصيل المنتج</label>
+        <input type="text" name="address" placeholder="العنوان" required/>
+        <label>رقم الهاتف</label>
+        <div class="phone-input">
+          <img src="images/flag-palestinian.png" alt="flag">
+          <input type="tel" name="phone" placeholder="+972 59 111 1111" required/>
+        </div>
+        <label>رقم هاتف احتياطي</label>
+        <div class="phone-input">
+          <img src="images/flag-palestinian.png" alt="flag">
+          <input type="tel" name="backupPhone" placeholder="+972 59 111 1111" />
+        </div>
+        <button type="submit" class="btn-confirm">تأكيد</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Done Modal -->
+<div class="modal" id="doneModal">
+  <div class="modal-content done-popup">
+    <div class="cart-arrow"></div>
+    <span class="close" onclick="document.getElementById('doneModal').style.display='none'">&times;</span>
+    <div class="done-body">
+      <p class="done-text">
+        سيتواصل معك مندوبينا لتوصيل المنتجات و تأكيد الدفع! <br>
+        نتمنى لك تسوقاً ممتعاً!
+      </p>
+      <button class="btn-done">أكمل التسوق</button>
+    </div>
+  </div>
+</div>

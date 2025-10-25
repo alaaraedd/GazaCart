@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head> 
+ 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="storeTitle">متجر</title>
+  <link id="favicon" rel="icon" type="image/png" href="images/logocart.svg">
+  <link rel="stylesheet" href="css/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preload" href="cart-modals.html" as="fetch" crossorigin="anonymous">
+
+
+</head>
+
+<body class="client-page">
+  <!-- Header -->
+  <header class="header" dir="rtl">
+    <div class="container">
+      <a href="#hero" class="logo-link">
+        <img src="images/logocart.svg" alt="logo" class="logo">
+      </a>
+      <nav class="nav">
+        <a href="index.html">الرئيسية</a>
+        <a href="#best">أفضل المتاجر</a>
+        <a href="#clothes">متاجر الملابس</a>
+        <a href="#accessories">متاجر الاكسسوارات</a>
+        <a href="#sweets">متاجر الحلويات</a>
+        <a href="#footer">اتصل بنا</a>
+      </nav>
+      <div class="cart">
+        <img src="images/Frame 20.png" alt="سلة" onclick="openCart()">
+        <span>0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <div class="banner"></div>
+
+  <!-- Profile -->
+  <div class="profile">
+    <div class="profile-info">
+      <img class="profile-img" src="images/profile.jpg" alt="profile">
+      <h2>اسم المتجر</h2>
+      <div class="stars">☆☆☆☆☆</div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="about">
+    <h3>عن المتجر</h3>
+    <p>جاري تحميل بيانات المتجر...</p>
+  </section>
+
+  <!-- Products -->
+  <section class="related product-page">
+    <h3>المنتجات</h3>
+    <div class="products-grid">
+      <p>جاري تحميل المنتجات...</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container" id="footer">
+      <div class="footer-col">
+        <img src="images/logocart.svg" alt="footer logo" class="footer-logo">
+        <p>موقع GAZA CART ، لتسهيل طلب خدماتك بسرعة ووقت...</p>
+      </div>
+      <div class="footer-col">
+        <h4>الخدمات</h4>
+        <ul>
+          <li>من نحن</li>
+          <li>الأسئلة الشائعة</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>سياسة الخصوصية</h4>
+        <ul>
+          <li>سياسة الترجيع</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>تابعونا على</h4>
+        <div class="social">
+          <a href="https://www.facebook.com" target="_blank"><img src="images/Facebook.svg" alt="فيسبوك"></a>
+          <a href="https://www.instagram.com" target="_blank"><img src="images/Instagram.svg" alt="انستغرام"></a>
+          <a href="https://www.twitter.com" target="_blank"><img src="images/Twitter.svg" alt="تويتر"></a>
+          <a href="https://www.tiktok.com" target="_blank"><img src="images/TikTok.svg" alt="تيك توك"></a>
+          <a href="https://www.youtube.com" target="_blank"><img src="images/YouTube.svg" alt="يوتيوب"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="copyright">© 2025 جميع الحقوق محفوظة</div>
+
+  <!-- ======= Container لتحميل Popups ======= -->
+
+  <!-- مكان تحميل المودالات -->
+  <div id="modals-container"></div>
+
+  <script>
+    // تحميل المودالات من ملف خارجي
+    fetch("cart-modals.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("modals-container").innerHTML = html;
+
+        // ✅ تفعيل أكواد المودالات بعد تحميلها
+        window.openCart = function () {
+          document.getElementById('cartModal').style.display = 'flex';
+        };
+
+        window.onclick = function (event) {
+          const modal = document.getElementById('cartModal');
+          if (event.target === modal) modal.style.display = "none";
+        };
+
+        document.querySelectorAll(".cart-summary .btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            document.getElementById("cartModal").style.display = "none";
+            document.getElementById("paymentModal").style.display = "flex";
+          });
+        });
+
+        document.querySelector(".btn-cash").addEventListener("click", function () {
+          document.getElementById("paymentModal").style.display = "none";
+          document.getElementById("checkoutModal").style.display = "flex";
+        });
+
+        document.querySelector(".checkout-popup form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          document.getElementById("checkoutModal").style.display = "none";
+          document.getElementById("doneModal").style.display = "flex";
+        });
+
+        document.querySelector(".btn-done").addEventListener("click", function () {
+          document.getElementById("doneModal").style.display = "none";
+        });
+      });
+</script>
+
+  <!-- JS -->
+  <script src="js/store.js"></script>
+  <script src="js/cart-script.js"></script>
+
+
+  
+</body>
+</html>
