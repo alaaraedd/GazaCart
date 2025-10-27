@@ -252,7 +252,7 @@
       <label class="upload-box">
         <i class="fa-solid fa-upload"></i>
         <span>اضغط لرفع الصور</span>
-        <input type="file" multiple>
+        <input type="file" >
       </label>
       <button class="submit-btn">إضافة</button>
     </div>
@@ -271,11 +271,13 @@
         <input type="text" id="edit-name">
         <label>وصف المنتج</label>
         <textarea id="edit-desc"></textarea>
+         <label>سعر المنتج</label>
+       <input type="number" id="edit-price" >
         <label>صور المنتج</label>
         <label class="upload-box">
           <i class="fa-solid fa-upload"></i>
           <span>اضغط لرفع مزيد من الصور</span>
-          <input type="file" multiple>
+          <input type="file" >
         </label>
         <button class="submit-btn">حفظ التعديلات</button>
       </div>
@@ -345,6 +347,7 @@
 const editPopup = document.getElementById("editItemPopup");
 const editName = editPopup?.querySelector("#edit-name");
 const editDesc = editPopup?.querySelector("#edit-desc");
+const editprice = editPopup?.querySelector("#edit-price");
 const submitEditBtn = editPopup?.querySelector(".submit-btn");
 const editImageInput = editPopup?.querySelector("input[type='file']");
 
@@ -356,6 +359,7 @@ submitEditBtn?.addEventListener("click", async () => {
   const formData = new FormData();
   formData.append("name", editName.value.trim());
   formData.append("description", editDesc.value.trim());
+  formData.append("price", editprice.value.trim());
 
   // إذا المستخدم رفع صورة جديدة أضفها
   if (editImageInput && editImageInput.files[0]) {
@@ -388,7 +392,7 @@ submitEditBtn?.addEventListener("click", async () => {
     fetchStore(); // إعادة جلب وعرض المنتجات
   } catch (err) {
     console.error("Error updating product:", err);
-    alert("❌ خطأ أثناء تعديل المنتج: " + err.message);
+   
   }
 });
 
@@ -396,6 +400,8 @@ function openEditPopup(prod) {
   currentEditingProduct = prod;
   editName.value = prod.name || "";
   editDesc.value = prod.description || "";
+   editprice.value = prod.price || "";
+  
   // فرّغ أي ملف مختار سابقاً
   if (editImageInput) editImageInput.value = "";
   openPopup("editItemPopup");
@@ -454,9 +460,11 @@ function setupAddPopup(storeId) {
   const submitAddBtn = addPopup?.querySelector(".submit-btn");
   const addBtn = document.querySelector(".add-product");
 
+  // فتح البوب اب
   addBtn?.addEventListener("click", () => openPopup("addItemPopup"));
 
-  submitAddBtn?.addEventListener("click", async () => {
+  // إزالة أي listener سابق لمنع التكرار
+  submitAddBtn.onclick = async () => {
     const name = addName.value.trim();
     const description = addDesc.value.trim();
     const price = addPrice.value.trim();
@@ -471,33 +479,36 @@ function setupAddPopup(storeId) {
     formData.append("storeId", storeId);
 
     if (addImages.files[0]) {
-      formData.append("image", addImages.files[0]); // يطابق upload.single("image") في الباك
+      formData.append("image", addImages.files[0]);
     }
 
+    submitAddBtn.disabled = true; // منع الضغط المتكرر
     try {
       const res = await fetch("http://localhost:5000/api/products", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("token"),
-          // لا تضف Content-Type مع FormData
+          "Authorization": "Bearer " + localStorage.getItem("token")
         },
         body: formData,
       });
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        console.error("Server error:", errData);
         throw new Error(errData.message || "فشل في إضافة المنتج");
       }
 
-      alert("✅ تم إضافة المنتج بنجاح");
+      const data = await res.json();
+      alert("✅ " + data.message);
       closePopup("addItemPopup");
       fetchStore();
+
     } catch (err) {
       console.error("❌ Error:", err);
       alert("❌ خطأ أثناء إضافة المنتج: " + err.message);
+    } finally {
+      submitAddBtn.disabled = false; // إعادة تفعيل الزر
     }
-  });
+  };
 }
 
 
@@ -520,42 +531,54 @@ function setupAddPopup(storeId) {
   });
 
   // ===== تسجيل الدخول =====
-  document.addEventListener("DOMContentLoaded", () => {
-    const loginPopup = document.getElementById("loginPopup");
-    const loginForm = document.getElementById("loginForm");
-    const loginEmail = document.getElementById("loginEmail");
-    const loginPassword = document.getElementById("loginPassword");
-    const loginError = document.getElementById("loginError");
+document.addEventListener("DOMContentLoaded", () => {
+  const loginPopup = document.getElementById("loginPopup");
+  const loginForm = document.getElementById("loginForm");
+  const loginEmail = document.getElementById("loginEmail");
+  const loginPassword = document.getElementById("loginPassword");
+  const loginError = document.getElementById("loginError");
 
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    // ✅ يوجد تسجيل دخول مسبق — لا تظهر نافذة الدخول
+    document.body.classList.remove("login-active");
+    loginPopup.classList.remove("active");
+    initStoreAdmin();
+  } else {
+    // ❌ لا يوجد توكن — فعّل واجهة تسجيل الدخول
     document.body.classList.add("login-active");
+    loginPopup.classList.add("active");
+  }
 
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        const res = await fetch("http://localhost:5000/api/auth/merchant/signin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: loginEmail.value.trim(),
-            password: loginPassword.value.trim(),
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "خطأ أثناء تسجيل الدخول");
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/merchant/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: loginEmail.value.trim(),
+          password: loginPassword.value.trim(),
+        }),
+      });
 
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("merchantId", data.user._id);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "خطأ أثناء تسجيل الدخول");
 
-        loginPopup.classList.remove("active");
-        document.body.classList.remove("login-active");
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("merchantId", data.user._id);
 
-        initStoreAdmin();
-      } catch (err) {
-        loginError.textContent = err.message;
-        loginError.style.display = "block";
-      }
-    });
+      loginPopup.classList.remove("active");
+      document.body.classList.remove("login-active");
+
+      initStoreAdmin();
+    } catch (err) {
+      loginError.textContent = err.message;
+      loginError.style.display = "block";
+    }
   });
+});
 
   // ===== تهيئة لوحة التاجر =====
 async function initStoreAdmin() {
@@ -594,60 +617,53 @@ async function initStoreAdmin() {
     document.title = store.name || "لوحة التاجر";
 
    // ===== تعديل وصف المتجر =====
-const newEditBtn = editDescBtn.cloneNode(true);
-editDescBtn.parentNode.replaceChild(newEditBtn, editDescBtn);
+// ===== تعديل وصف المتجر =====
+const editDescBtn = document.querySelector(".about button");
 
-newEditBtn.addEventListener("click", async () => {
-  const newDesc = prompt("أدخل وصف المتجر الجديد:", store.description || "");
-  if (newDesc === null) return; // إذا ألغى المستخدم
+// 🔒 تحقق أولاً أن الزر موجود فعلاً
+if (editDescBtn) {
+  // نحذف أي مستمع قديم لمنع تكرار الحدث بعد كل تحديث
+  editDescBtn.replaceWith(editDescBtn.cloneNode(true));
+  const newEditBtn = document.querySelector(".about button");
 
-  const storeId = localStorage.getItem("storeId");
-  const token = localStorage.getItem("token");
+  newEditBtn.addEventListener("click", async () => {
+    const newDesc = prompt("أدخل وصف المتجر الجديد:", store.description || "");
+    if (newDesc === null) return; // المستخدم ألغى
 
-  if (!storeId || !token) {
-    alert("❌ لم يتم العثور على معلومات المتجر أو تسجيل الدخول.");
-    return;
-  }
+    const storeId = localStorage.getItem("storeId");
+    const token = localStorage.getItem("token");
 
-  console.log("🔹 storeId:", storeId, "🔹 token موجود");
+    if (!storeId || !token) {
+      alert("❌ لم يتم العثور على معلومات المتجر أو تسجيل الدخول.");
+      return;
+    }
 
-  try {
-    const res = await fetch(`http://127.0.0.1:5000/api/stores/${storeId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token,
-      },
-      body: JSON.stringify({ description: newDesc }),
-    });
-
-    console.log("🔹 Status:", res.status);
-
-    let data = {};
     try {
-      data = await res.json();
-    } catch (jsonErr) {
-      console.warn("⚠️ لم يتمكن من قراءة JSON من السيرفر:", jsonErr);
+      const res = await fetch(`http://127.0.0.1:5000/api/stores/${storeId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        },
+        body: JSON.stringify({ description: newDesc }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || "فشل في تعديل الوصف");
+
+      // تحديث النص مباشرة في الواجهة
+      const descEl = document.querySelector(".about p");
+      if (descEl) descEl.textContent = newDesc;
+
+      alert("✅ تم تعديل وصف المتجر بنجاح");
+    } catch (err) {
+      console.error("❌ خطأ أثناء تعديل الوصف:", err);
+      alert("❌ خطأ أثناء تعديل الوصف: " + err.message);
     }
-
-    console.log("🔹 Response:", data);
-
-    if (!res.ok) {
-      const msg = data.message || `فشل في تعديل الوصف (HTTP ${res.status})`;
-      throw new Error(msg);
-    }
-
-    // تحديث النص في الواجهة مباشرة
-    store.description = newDesc;
-    const descEl = document.querySelector(".about p");
-    if (descEl) descEl.textContent = newDesc;
-
-    alert("✅ تم تعديل وصف المتجر بنجاح");
-  } catch (err) {
-    console.error("❌ خطأ أثناء تعديل الوصف:", err);
-    alert("❌ خطأ أثناء تعديل الوصف: " + err.message);
-  }
-});
+  });
+} else {
+  console.warn("⚠️ لم يتم العثور على زر تعديل الوصف في الصفحة.");
+}
 
 
     // عرض المنتجات

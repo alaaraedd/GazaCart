@@ -99,12 +99,24 @@ router.post("/", protect, authorizeRoles("merchant"), upload.single("image"), as
     });
 
     await product.save();
-    res.status(201).json(product);
+console.log("✅ Product saved successfully:", product);
+    // أضف المنتج إلى قائمة منتجات المتجر أيضًا
+   // store.productsList.push(product._id);
+    //await store.save();
+
+    // ✅ استجابة واضحة وصحيحة (لن ترجع 204 أبداً)
+    return res.status(201).json({
+      message: "تم إضافة المنتج بنجاح",
+      product
+    });
+
   } catch (err) {
-    console.error("Error creating product:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ Error creating product:", err);
+    // ⚠️ تأكد من أن الخطأ يُرجع استجابة وليس يمر للـ next()
+    return res.status(500).json({ message: "حدث خطأ أثناء إنشاء المنتج", error: err.message });
   }
 });
+
 
 // ===== تعديل منتج =====
 router.put("/:id", protect, upload.single("image"), async (req, res) => {
@@ -133,10 +145,11 @@ router.put("/:id", protect, upload.single("image"), async (req, res) => {
     }
 
     await product.save();
-    res.json(product);
+    console.log("✅ Product updated successfully:", product);
+    res.json({ message: "تم تعديل المنتج بنجاح", product });
   } catch (err) {
     console.error("Error updating product:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ message: "حدث خطأ أثناء تعديل المنتج", error: err.message });
   }
 });
 
